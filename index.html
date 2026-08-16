@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>사진 효과</title>
+<title>Photo Effect</title>
 
 <style>
 
 /* =========================
-   전체 기본 설정
+   전체
 ========================= */
 
 * {
@@ -21,27 +20,14 @@ html,
 body {
     margin: 0;
     padding: 0;
-
     width: 100%;
     height: 100%;
-
     overflow: hidden;
-
     background: transparent;
 }
 
-
-/* =========================
-   BODY
-========================= */
-
 body {
-    margin: 0;
-    padding: 0;
-
     display: block;
-
-    background: transparent;
 }
 
 
@@ -57,28 +43,25 @@ body {
 
     overflow: hidden;
 
-    /* 모서리 둥글게 */
     border-radius: 20px;
 
     cursor: pointer;
 
-    /* 검은 배경 제거 */
     background: transparent;
 
-    /* 그림자 제거 */
-    box-shadow: none;
+    /* 보잉 효과 때문에 기준점 설정 */
+    transform-origin: center center;
 }
 
 
 /* =========================
-   사진 3장 공통
+   사진
 ========================= */
 
 .card img {
     position: absolute;
 
-    top: 0;
-    left: 0;
+    inset: 0;
 
     width: 100%;
     height: 100%;
@@ -87,19 +70,16 @@ body {
 
     opacity: 0;
 
+    display: block;
+
     pointer-events: none;
     user-select: none;
 
-    display: block;
-
-    transition:
-        opacity 0.5s ease;
+    transition: opacity 0.42s ease;
 }
 
 
-/* =========================
-   ① 처음 보이는 사진
-========================= */
+/* ① 기본 */
 
 .card .photo1 {
     opacity: 1;
@@ -107,8 +87,7 @@ body {
 
 
 /* =========================
-   마우스를 올림
-
+   마우스 올림
    ① → ②
 ========================= */
 
@@ -123,14 +102,10 @@ body {
 
 /* =========================
    클릭
-
-   ② → ③
+   → ③
 ========================= */
 
-.card.clicked .photo1 {
-    opacity: 0;
-}
-
+.card.clicked .photo1,
 .card.clicked .photo2 {
     opacity: 0;
 }
@@ -185,10 +160,6 @@ body {
 }
 
 
-/* =========================
-   광택 이동
-========================= */
-
 @keyframes shineMove {
 
     0% {
@@ -212,7 +183,7 @@ body {
 
 
 /* =========================
-   은은한 보라색 빛
+   보라색 은은한 광원
 ========================= */
 
 .glow {
@@ -228,26 +199,221 @@ body {
 
     background: radial-gradient(
         circle at 50% 40%,
-
         rgba(230,195,255,0.16),
-
         rgba(145,80,255,0) 65%
     );
 
-    transition:
-        opacity 0.45s ease;
+    transition: opacity 0.45s ease;
 }
 
-
-/* ② 사진 상태에서 빛 */
 
 .card:hover:not(.clicked) .glow {
     opacity: 1;
 }
 
 
-</style>
+/* =========================
+   보잉 효과
+========================= */
 
+.card.boing {
+    animation: boing 0.55s
+        cubic-bezier(.22, 1.4, .36, 1);
+}
+
+
+@keyframes boing {
+
+    0% {
+        transform: scale(1);
+    }
+
+    /* 순간적으로 눌림 */
+    18% {
+        transform:
+            scaleX(0.96)
+            scaleY(0.91);
+    }
+
+    /* 통! 하고 커짐 */
+    40% {
+        transform:
+            scaleX(1.035)
+            scaleY(1.07);
+    }
+
+    /* 반동 */
+    60% {
+        transform:
+            scaleX(0.985)
+            scaleY(0.97);
+    }
+
+    /* 한 번 더 살짝 */
+    78% {
+        transform:
+            scaleX(1.01)
+            scaleY(1.025);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+
+/* =========================
+   하트가 나오는 영역
+========================= */
+
+.hearts {
+    position: absolute;
+
+    z-index: 100;
+
+    inset: 0;
+
+    overflow: hidden;
+
+    pointer-events: none;
+}
+
+
+/* 각각의 하트 */
+
+.heart {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    font-family:
+        Arial,
+        "Apple Color Emoji",
+        "Segoe UI Emoji",
+        sans-serif;
+
+    font-weight: bold;
+
+    line-height: 1;
+
+    pointer-events: none;
+
+    user-select: none;
+
+    will-change:
+        transform,
+        opacity;
+
+    animation:
+        heartPop 1.15s
+        cubic-bezier(.17,.67,.28,1)
+        forwards;
+}
+
+
+/* =========================
+   하트 움직임
+========================= */
+
+@keyframes heartPop {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate(-50%, -50%)
+            translate(0px, 0px)
+            scale(0.25)
+            rotate(0deg);
+    }
+
+    12% {
+        opacity: 1;
+    }
+
+    30% {
+        transform:
+            translate(-50%, -50%)
+            translate(
+                calc(var(--x) * 0.45),
+                calc(var(--y) * 0.35)
+            )
+            scale(1.25)
+            rotate(
+                calc(var(--r) * 0.4)
+            );
+    }
+
+    70% {
+        opacity: 0.9;
+    }
+
+    100% {
+        opacity: 0;
+
+        transform:
+            translate(-50%, -50%)
+            translate(
+                var(--x),
+                var(--y)
+            )
+            scale(0.75)
+            rotate(var(--r));
+    }
+}
+
+
+/* =========================
+   클릭 순간 반짝임
+========================= */
+
+.flash {
+    position: absolute;
+
+    z-index: 50;
+
+    inset: 0;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            circle at var(--flash-x, 50%)
+                      var(--flash-y, 50%),
+
+            rgba(255,255,255,0.55),
+
+            rgba(255,190,230,0.20) 20%,
+
+            transparent 55%
+        );
+}
+
+
+.flash.active {
+    animation: flashEffect 0.45s ease-out;
+}
+
+
+@keyframes flashEffect {
+
+    0% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+</style>
 </head>
 
 
@@ -262,36 +428,52 @@ body {
     <img
         src="photo1.png"
         class="photo1"
-        alt="1번 사진"
+        alt=""
     >
 
 
-    <!-- ② 마우스를 올렸을 때 -->
+    <!-- ② 마우스 오버 -->
 
     <img
         src="photo2.png"
         class="photo2"
-        alt="2번 사진"
+        alt=""
     >
 
 
-    <!-- ③ 클릭했을 때 -->
+    <!-- ③ 클릭 -->
 
     <img
         src="photo3.png"
         class="photo3"
-        alt="3번 사진"
+        alt=""
     >
 
 
-    <!-- 은은한 빛 -->
+    <!-- 은은한 광원 -->
 
     <div class="glow"></div>
 
 
-    <!-- 지나가는 광택 -->
+    <!-- 광택 -->
 
     <div class="shine"></div>
+
+
+    <!-- 클릭 반짝임 -->
+
+    <div
+        class="flash"
+        id="flash"
+    ></div>
+
+
+    <!-- 하트 -->
+
+    <div
+        class="hearts"
+        id="hearts"
+    ></div>
 
 
 </div>
@@ -300,21 +482,21 @@ body {
 
 <script>
 
-
 /* =========================
-   카드 찾기
+   요소
 ========================= */
 
 const card =
     document.getElementById("card");
 
-
-/* =========================
-   광택 찾기
-========================= */
-
 const shine =
     card.querySelector(".shine");
+
+const hearts =
+    document.getElementById("hearts");
+
+const flash =
+    document.getElementById("flash");
 
 
 /* =========================
@@ -333,9 +515,235 @@ function playShine() {
 
 
 /* =========================
-   마우스 올림
+   보잉 실행
+========================= */
 
+function playBoing() {
+
+    card.classList.remove("boing");
+
+    void card.offsetWidth;
+
+    card.classList.add("boing");
+
+
+    setTimeout(function () {
+
+        card.classList.remove("boing");
+
+    }, 600);
+}
+
+
+/* =========================
+   클릭 반짝임
+========================= */
+
+function playFlash(x, y) {
+
+    const rect =
+        card.getBoundingClientRect();
+
+
+    const percentX =
+        ((x - rect.left) / rect.width) * 100;
+
+    const percentY =
+        ((y - rect.top) / rect.height) * 100;
+
+
+    flash.style.setProperty(
+        "--flash-x",
+        percentX + "%"
+    );
+
+    flash.style.setProperty(
+        "--flash-y",
+        percentY + "%"
+    );
+
+
+    flash.classList.remove("active");
+
+    void flash.offsetWidth;
+
+    flash.classList.add("active");
+}
+
+
+/* =========================
+   하트 생성
+========================= */
+
+function createHearts(x, y) {
+
+    const rect =
+        card.getBoundingClientRect();
+
+
+    const startX =
+        x - rect.left;
+
+    const startY =
+        y - rect.top;
+
+
+    /* 하트 개수 */
+
+    const heartCount = 16;
+
+
+    const heartCharacters = [
+        "♥",
+        "♡",
+        "♥",
+        "♡"
+    ];
+
+
+    for (
+        let i = 0;
+        i < heartCount;
+        i++
+    ) {
+
+        const heart =
+            document.createElement("span");
+
+
+        heart.className = "heart";
+
+
+        /* ♥ 또는 ♡ */
+
+        heart.textContent =
+            heartCharacters[
+                Math.floor(
+                    Math.random() *
+                    heartCharacters.length
+                )
+            ];
+
+
+        /* 클릭한 위치에서 시작 */
+
+        heart.style.left =
+            startX + "px";
+
+        heart.style.top =
+            startY + "px";
+
+
+        /* 랜덤 방향 */
+
+        const angle =
+            Math.random() *
+            Math.PI * 2;
+
+
+        const distance =
+            80 +
+            Math.random() * 170;
+
+
+        const moveX =
+            Math.cos(angle) *
+            distance;
+
+
+        /*
+           위쪽으로 조금 더 많이
+           날아가도록 조정
+        */
+
+        const moveY =
+            Math.sin(angle) *
+            distance
+            - 70;
+
+
+        const rotation =
+            -90 +
+            Math.random() * 180;
+
+
+        heart.style.setProperty(
+            "--x",
+            moveX + "px"
+        );
+
+        heart.style.setProperty(
+            "--y",
+            moveY + "px"
+        );
+
+        heart.style.setProperty(
+            "--r",
+            rotation + "deg"
+        );
+
+
+        /* 하트 크기 */
+
+        const size =
+            20 +
+            Math.random() * 28;
+
+        heart.style.fontSize =
+            size + "px";
+
+
+        /* 핑크 계열 */
+
+        const colors = [
+            "#ff4f87",
+            "#ff72a1",
+            "#ff9fbd",
+            "#ffffff",
+            "#ffd1df"
+        ];
+
+        heart.style.color =
+            colors[
+                Math.floor(
+                    Math.random() *
+                    colors.length
+                )
+            ];
+
+
+        /* 약간씩 다른 속도 */
+
+        const duration =
+            0.85 +
+            Math.random() * 0.5;
+
+        heart.style.animationDuration =
+            duration + "s";
+
+
+        hearts.appendChild(heart);
+
+
+        /* 끝난 하트 제거 */
+
+        setTimeout(
+            function () {
+
+                heart.remove();
+
+            },
+
+            duration * 1000 + 100
+        );
+    }
+}
+
+
+/* =========================
    ① → ✨②
+
+   마우스 올림
 ========================= */
 
 card.addEventListener(
@@ -351,22 +759,59 @@ card.addEventListener(
 /* =========================
    클릭
 
-   ② → ③
-   ③ → ②
+   ② → 💗③
+
+   다시 클릭
+
+   ③ → 💗②
 ========================= */
 
 card.addEventListener(
     "click",
-    function () {
+    function (event) {
 
-        card.classList.toggle("clicked");
+
+        /*
+           사진 변경
+        */
+
+        card.classList.toggle(
+            "clicked"
+        );
+
+
+        /*
+           보잉
+        */
+
+        playBoing();
+
+
+        /*
+           하트
+        */
+
+        createHearts(
+            event.clientX,
+            event.clientY
+        );
+
+
+        /*
+           클릭 위치 반짝임
+        */
+
+        playFlash(
+            event.clientX,
+            event.clientY
+        );
 
     }
 );
 
 
 /* =========================
-   마우스 밖으로
+   마우스 밖
 
    → ✨①
 ========================= */
@@ -375,7 +820,19 @@ card.addEventListener(
     "mouseleave",
     function () {
 
-        card.classList.remove("clicked");
+
+        /*
+           ③ 상태 해제
+        */
+
+        card.classList.remove(
+            "clicked"
+        );
+
+
+        /*
+           광택
+        */
 
         playShine();
 
@@ -385,7 +842,5 @@ card.addEventListener(
 
 </script>
 
-
 </body>
-
 </html>
